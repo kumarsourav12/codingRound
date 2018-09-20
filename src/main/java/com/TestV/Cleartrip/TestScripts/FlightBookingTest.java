@@ -1,89 +1,72 @@
 package com.TestV.Cleartrip.TestScripts;
-
-import com.sun.javafx.PlatformUtil;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
+import com.TestV.Cleartrip.BaseSteps;
+import com.TestV.Cleartrip.FunctionLibrary.FlightSearchOps;
+import com.TestV.Cleartrip.ObjectRepository.FlightSearchPage;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.List;
-
-public class FlightBookingTest {
-    WebDriver driver;
-
+public class FlightBookingTest extends BaseSteps{
+    FlightSearchOps flightSearchOps = new FlightSearchOps();
+    String catcher="";
 
     @Test
-    public void testThatResultsAppearForAOneWayJourney() {
-        setDriverPath();
-         driver = new ChromeDriver();
-        driver.get("https://www.cleartrip.com/");
-        waitFor(2000);
-        driver.findElement(By.id("OneWay")).click();
+    public void testSearchingForFlights() throws Exception {
 
-        driver.findElement(By.id("FromTag")).clear();
-        driver.findElement(By.id("FromTag")).sendKeys("Bangalore");
-
-        //wait for the auto complete options to appear for the origin
-
-        waitFor(2000);
-        List<WebElement> originOptions = driver.findElement(By.id("ui-id-1")).findElements(By.tagName("li"));
-        originOptions.get(0).click();
-        waitFor(3000);
-        driver.findElement(By.id("destination_autocomplete")).clear();
-        driver.findElement(By.id("destination_autocomplete")).sendKeys("Delhi");
-
-        //wait for the auto complete options to appear for the destination
-
-        waitFor(2000);
-        //select the first item from the destination auto complete list
-        List<WebElement> destinationOptions = driver.findElement(By.id("ui-id-2")).findElements(By.tagName("li"));
-        destinationOptions.get(0).click();
-
-        driver.findElement(By.xpath("//*[@id='ui-datepicker-div']/div[1]/table/tbody/tr[3]/td[7]/a")).click();
-
-        //all fields filled in. Now click on search
-        driver.findElement(By.id("SearchBtn")).click();
-
-        waitFor(5000);
-        //verify that result appears for the provided journey search
-        Assert.assertTrue(isElementPresent(By.className("searchSummary")));
-
-        //close the browser
-        driver.quit();
-
-    }
-
-
-    private void waitFor(int durationInMilliSeconds) {
-        try {
-            Thread.sleep(durationInMilliSeconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//call the function to select one way and check for errors
+        catcher = flightSearchOps.selectOneway();
+        if(catcher!="")
+        {
+            System.out.println("Error selecting the button. Reason "+catcher);
+            Assert.fail();
         }
-    }
+        else System.out.println("selected one way");
 
+//enter from city and select first element from dropdown
+        catcher = flightSearchOps.enterFromCity("Bangalore");
+        if(catcher!="")
+        {
+            System.out.println("Error entering from city. Reason "+catcher);
+            Assert.fail();
+        }
+        else System.out.println("Entered from city");
 
-    private boolean isElementPresent(By by) {
-        try {
-            driver.findElement(by);
-            return true;
-        } catch (NoSuchElementException e) {
-            return false;
+//enter to city and select first element
+        catcher = flightSearchOps.enterToCity("Delhi");
+        if(catcher!="")
+        {
+            System.out.println("Error entering to city. Reason "+catcher);
+            Assert.fail();
         }
-    }
+        else System.out.println("Entered to city");
 
-    private void setDriverPath() {
-        if (PlatformUtil.isMac()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
+//select todays date
+        catcher = flightSearchOps.selectTodaysDate();
+        if(catcher!="")
+        {
+            System.out.println("Error selecting today's date. Reason "+catcher);
+            Assert.fail();
         }
-        if (PlatformUtil.isWindows()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+        else System.out.println("Selected today's date");
+
+//click on search button
+        catcher = flightSearchOps.clickOnSearch();
+        if(catcher!="")
+        {
+            System.out.println("Error clicking on search button. Reason "+catcher);
+            Assert.fail();
         }
-        if (PlatformUtil.isLinux()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_linux");
+        else System.out.println("Clicked on search button");
+
+//verify that search results appear
+        catcher = flightSearchOps.verifyThatResultsAppeared();
+        if(catcher!="")
+        {
+            System.out.println("Result page did not appear. Reason "+catcher);
+            Assert.fail();
         }
+        else System.out.println("Results rendered successfully");
     }
 }
