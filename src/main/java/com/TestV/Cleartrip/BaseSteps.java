@@ -12,6 +12,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+import javax.swing.plaf.basic.BasicTreeUI;
 import java.util.concurrent.TimeUnit;
 
 public class BaseSteps {
@@ -21,21 +22,28 @@ public class BaseSteps {
     @BeforeSuite
     public void setup()
     {
+        //---get address from pom
+        //String baseURL =System.getProperty("sys.cleartrip.baseURL");
+        String baseURL= "http://www.cleartrip.com";
+        //---block notifications
         ChromeOptions options = new ChromeOptions();
-
         options.addArguments("--disable-notifications");
         setDriverPath();
+
+        //---initialize the driver
         driver=new ChromeDriver(options);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
         PageFactory.initElements(driver,FlightSearchPage.class);
-        driver.get("http://www.cleartrip.com");
+
+        //---launch the site
+        driver.get(baseURL);
     }
 
     @AfterSuite
         public void cleanup()
     {
-        //driver.quit();
+        driver.quit();
     }
 
 
@@ -60,7 +68,6 @@ public class BaseSteps {
     {
         element.click();
     }
-
 
 
 

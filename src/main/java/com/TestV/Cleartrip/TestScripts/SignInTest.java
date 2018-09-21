@@ -1,74 +1,46 @@
 package com.TestV.Cleartrip.TestScripts;
 
-import com.sun.javafx.PlatformUtil;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import com.TestV.Cleartrip.BaseSteps;
+import com.TestV.Cleartrip.FunctionLibrary.SignInOps;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Iterator;
-import java.util.Set;
-
-public class SignInTest {
-
-    private static Object firstHandle;
-    private static Object lastHandle;
+public class SignInTest extends BaseSteps{
+    SignInOps signInOps=  new SignInOps();
+    String catcher = "";
     @Test
-    public void shouldThrowAnErrorIfSignInDetailsAreMissing() throws InterruptedException {
-        setDriverPath();
-        WebDriver driver = new ChromeDriver();
-        System.out.println("before set drive path");
-        //setDriverPath();
+    public void testSignIn()
+    {
+        catcher = signInOps.ClickOnYourTrips();
+        if(catcher!="")
+        {
+            System.out.println("Unable to click on Your Trips "+catcher);
+            Assert.fail();
+        }
+        else System.out.println("Clicked on Your Trips link");
 
-        System.out.println("after set drive path");
-        driver.get("https://www.cleartrip.com/");
-        waitFor(2000);
+        catcher = signInOps.ClickOnSignInLink();
+        if(catcher!="")
+        {
+            System.out.println("Unable to click on sign in link "+catcher);
+            Assert.fail();
+        }
+        else System.out.println("Clicked on sign in link");
 
-        driver.findElement(By.linkText("Your trips")).click();
-        driver.findElement(By.id("SignIn")).click();
-        Thread.sleep(5000);
-       driver.switchTo().activeElement();
+        catcher = signInOps.ClickOnSignInButton();
+        if(catcher!="")
+        {
+            System.out.println("Unable to click on sing in button "+catcher);
+            Assert.fail();
+        }
+        else System.out.println("Clicked on sign in button");
 
-        //driver.findElement(By.id("signInButton")).click();
-        driver.findElement(By.xpath("//*[@id=\"signInButton\"]"));
-
-        String errors1 = driver.findElement(By.id("errors1")).getText();
-        Assert.assertTrue(errors1.contains("There were errors in your submission"));
-        driver.quit();
+        catcher = signInOps.ValidateErrorMsg();
+        if(catcher!="")
+        {
+            System.out.println("Not able to validate the error message "+catcher);
+            Assert.fail();
+        }
+        else System.out.println("Verified the error message");
     }
-
-    private void waitFor(int durationInMilliSeconds) {
-        try {
-            Thread.sleep(durationInMilliSeconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
-    private void setDriverPath() {
-        if (PlatformUtil.isMac()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
-        }
-        if (PlatformUtil.isWindows()) {
-            System.setProperty("webdriver.chrome.driver", "D:\\TestV_Coding\\chromedriver.exe");
-        }
-        if (PlatformUtil.isLinux()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_linux");
-        }}
-
-        public static void switchToWindowsPopup(WebDriver driver) {
-            Set<String> handles = driver.getWindowHandles();
-            Iterator<String> itr = handles.iterator();
-            firstHandle = itr.next();
-            lastHandle = firstHandle;
-            while (itr.hasNext()) {
-                lastHandle = itr.next();
-            }
-            driver.switchTo().window(lastHandle.toString());
-        }
-
-
-
-
 }

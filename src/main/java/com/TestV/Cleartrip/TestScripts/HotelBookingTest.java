@@ -1,55 +1,64 @@
 package com.TestV.Cleartrip.TestScripts;
-
-import com.sun.javafx.PlatformUtil;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.Select;
+import com.TestV.Cleartrip.FunctionLibrary.HotelBookingOps;
+import com.TestV.Cleartrip.BaseSteps;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class HotelBookingTest {
-
-    WebDriver driver = new ChromeDriver();
-
-    @FindBy(linkText = "Hotels")
-    private WebElement hotelLink;
-
-    @FindBy(id = "Tags")
-    private WebElement localityTextBox;
-
-    @FindBy(id = "SearchHotelsButton")
-    private WebElement searchButton;
-
-    @FindBy(id = "travellersOnhome")
-    private WebElement travellerSelection;
+public class HotelBookingTest extends BaseSteps{
+    String catcher="";
 
     @Test
-    public void shouldBeAbleToSearchForHotels() {
-        setDriverPath();
+    public void testHotelBooking() throws Exception {
+        HotelBookingOps hotelBookingOps = new HotelBookingOps();
 
-        driver.get("https://www.cleartrip.com/");
-        hotelLink.click();
-
-        localityTextBox.sendKeys("Indiranagar, Bangalore");
-
-        new Select(travellerSelection).selectByVisibleText("1 room, 2 adults");
-        searchButton.click();
-
-        driver.quit();
-
-    }
-
-    private void setDriverPath() {
-        if (PlatformUtil.isMac()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
+        catcher = hotelBookingOps.selectHotelsTab();
+        if(catcher!="")
+        {
+            System.out.println("Unable to select hotels tab. Reason "+catcher);
+            Assert.fail();
         }
-        if (PlatformUtil.isWindows()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+        else System.out.println("selected hotels tab");
+
+        catcher = hotelBookingOps.enterLocality("Bangalore");
+        if(catcher!="")
+        {
+            System.out.println("Unable to enter locality. Reason "+catcher);
+            Assert.fail();
         }
-        if (PlatformUtil.isLinux()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_linux");
+        else System.out.println("Entered locality as Bangalore");
+
+        catcher = hotelBookingOps.selectCheckInDate();
+        if(catcher!="")
+        {
+            System.out.println("Unable to enter check in date. Reason "+catcher);
+            Assert.fail();
         }
+        else System.out.println("Entered check in date");
+        Thread.sleep(1000);
+
+        catcher = hotelBookingOps.selectCheckOutDate();
+        if(catcher!="")
+        {
+            System.out.println("Unable to enter checkout date. Reason "+catcher);
+            Assert.fail();
+        }
+        else System.out.println("Entered check out date");
+
+        catcher = hotelBookingOps.select1Room2Adult();
+        if(catcher!="")
+        {
+            System.out.println("Unable to select rooms "+catcher);
+            Assert.fail();
+        }
+        else System.out.println("Entered rooms");
+
+        catcher = hotelBookingOps.clickOnHotelSearchButton();
+        if(catcher!="")
+        {
+            System.out.println("Unable to click on search button. Reason "+catcher);
+            Assert.fail();
+        }
+        else System.out.println("Clicked on search button");
     }
 
 }

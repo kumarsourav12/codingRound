@@ -2,11 +2,9 @@ package com.TestV.Cleartrip.FunctionLibrary;
 import com.TestV.Cleartrip.BaseSteps;
 import com.TestV.Cleartrip.ObjectRepository.FlightSearchPage;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.testng.Assert;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -102,7 +100,7 @@ public class FlightSearchOps extends BaseSteps{
         return catcher;
     }
 
-    public  String selectTodaysDate() throws Exception
+    public String selectTodaysDate() throws Exception
     {
         FlightSearchPage flightSearchPage = PageFactory.initElements(driver,FlightSearchPage.class);
         try
